@@ -70,3 +70,42 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-source software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+Инструкции к деплою проекта:
+
+1. Создаем базу данных 
+2. Прописываем настройки в .env файл в корне проекта
+3. Выполняем установку модулей и фреймворка- composer install || php -d memory_limit=-1 /usr/local/bin/composer.phar update
+4. Выполняем миграции базы данных- php artisan migrate
+5. Загружаем в базу изначальные данные- php artisan db::seed
+6. Проверяем маршруты- php artisan route::list
+7. Запускаем фреймворк- php artisan serve
+
+После успешного запуска можем получить статистику по пользователям онлайн по протоколу GET и адресу:
+
+http://127.0.0.1:8000/get-users
+
+Ответ вернется в формате JSON. В ответе будет указан интервал времени по умолчанию- 3 часа. Если нужно ввести другой интервал, можно воспользоваться параметром interval
+
+interval = sec
+inetrval = min
+interval = hour
+interval = day
+interval = week
+interval = month
+
+Каждый паметр сужает выборку пользователей, которые были онлайн в промежутке времени:
+
+1 секунда
+1 минута
+1 час
+1 день
+1 неделя
+1 месяц
+
+от текущего времени соответственно.
+
+Если в запросе возникнут ошибки они будут возвращены в JSON ответе.
+
+В JSON ответе также указан код http ответа сервера.
