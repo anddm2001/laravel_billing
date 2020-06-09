@@ -16,12 +16,12 @@ class UserRepository{
         $PDO = DB::connection('mysql')->getPdo();
 
         $billingStmt = $PDO->prepare("
-                SELECT COUNT(*)
+                SELECT COUNT(*) AS status_one
                 FROM metrics t1
                 WHERE t1.`status` = 1
                 AND created_at >= DATE_SUB(NOW(), INTERVAL $interval)
                 UNION ALL
-                SELECT COUNT(*)
+                SELECT COUNT(*) AS status_two
                 FROM metrics t1
                 WHERE t1.`status` = 2
                 AND created_at >= DATE_SUB(NOW(), INTERVAL $interval);");
@@ -29,6 +29,11 @@ class UserRepository{
         $billingStmt->execute();
         $usersOnline = $billingStmt->fetchAll((\PDO::FETCH_ASSOC));
 
-        return response($usersOnline);
+        if($usersOnline)
+            $res_array = ["Users Online" => $usersOnline[0]["status_one"] - $usersOnline[1]["status_one"]];
+        else
+            $res_array = ["Error" => "Request error."];
+
+        return response($res_array);
     }
 }
